@@ -1,0 +1,806 @@
+import React, { useState, useRef, useEffect } from 'react';
+import { 
+  Users, Briefcase, Globe, Monitor, Heart, MapPin, 
+  Menu, X, ChevronRight, Star, ChevronDown, 
+  Brain, ShieldCheck, UserCheck, 
+  Building2, Tv, Cpu, Scissors,
+  Landmark, Target, TrendingUp, Image as ImageIcon,
+  PlayCircle
+} from 'lucide-react';
+
+// --- CONFIGURATION ---
+const BRAND_COLORS = {
+  primary: '#073459', // Xanh thương hiệu
+  accent: '#EB0738',  // Đỏ thương hiệu
+  light: '#F3F4F6',
+  white: '#FFFFFF'
+};
+
+// --- CẤU HÌNH VIDEO YOUTUBE ---
+const YOUTUBE_URL = "https://youtu.be/r_pjCzCqIN4?si=_Xkv_cE6ESsMXrBn"; 
+
+// --- ẢNH HỆ THỐNG ---
+const SYSTEM_IMAGES = {
+  logo: "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Logo%20Cao%20%C4%91%E1%BA%B3ng%20Vi%E1%BB%87t%20M%E1%BB%B9%2001.png",
+  
+  overview: [
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Copy%20of%20IMG_4682.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/1.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Logo%20Cao%20%C4%91%E1%BA%B3ng%20Vi%E1%BB%87t%20M%E1%BB%B9%2001.png"
+  ],
+
+  philosophy: [
+    "https://raw.githubusercontent.com/TungDoan93/tri-t-l-t---photo/main/19-1651319832-img-2714.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/tri-t-l-t---photo/main/DAV_6516.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/tri-t-l-t---photo/main/DSC_5706.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/tri-t-l-t---photo/main/VMD00077-Edit.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/tri-t-l-t---photo/main/VMD00301-Edit.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/tri-t-l-t---photo/main/z5308838570832_afbae4b8befad1d0ec63f940b37f1310.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/tri-t-l-t---photo/main/%C4%90%C3%A3%20ch%E1%BB%89nh%20s%E1%BB%ADa%201111.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/tri-t-l-t---photo/main/IMG_2407.JPG"
+  ],
+  
+  facilities: [
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Copy%20of%20IMG_4682.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/1.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/0319(3).png",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/DSC07711.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/DSC07732.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/DSC07754.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/DSC07759.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Ph%C3%B2ng%20QTKS.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Ph%C3%B2ng%20h%E1%BB%8Dc.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Copy%20of%20IMG_7920.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Ph%C3%B2ng%20CSSD.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/z6570943565715_f47ca2cf2d0df70c0457a92bf51dc002.jpg"
+  ],
+  
+  programs: [
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/%E1%BB%A8ng%20d%E1%BB%A5ng%20ph%E1%BA%A7n%20m%E1%BB%81m.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Thi%E1%BA%BFt%20k%E1%BA%BF%20%C4%91%E1%BB%93%20ho%E1%BA%A1.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Qu%E1%BA%A3n%20tr%E1%BB%8B%20kh%C3%A1ch%20s%E1%BA%A1n.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Phi%C3%AAn%20d%E1%BB%8Bch%20ti%E1%BA%BFng%20Anh%20th%C6%B0%C6%A1ng%20m%E1%BA%A1i.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Ng%C3%B4n%20ng%E1%BB%AF%20Nh%E1%BA%ADt.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Digital%20Marketing.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/C%C3%B4ng%20ngh%E1%BB%87%20k%E1%BB%B9%20thu%E1%BA%ADt%20%C3%B4%20t%C3%B4.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/VMCPhoto/main/Ch%C4%83m%20s%C3%B3c%20s%E1%BA%AFc%20%C4%91%E1%BA%B9p.jpg"
+  ],
+
+  services: [
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/DNH.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/DNH2.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/DSC02704.JPG",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/527347718_735037449332658_6357996714817947323_n.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/529224592_735682172601519_869982725120662947_n.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/536275873_122218346804130813_1860408858552398726_n.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/582316685_818452177657851_8908660485304117497_n.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/Add%20logo%20T8%20-%2011.08-18.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/BONG%20DA-29.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/z6190051309699_03f776a1005c132f5348d5147c525c58.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/z6499087785226_7cd4d991629625016b30f0c9ef267615.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/z6499087803520_317fe18c5b9c8469ade8d1f963d68ae8.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/z6543246833907_b03e3652f474498dbc443e0bc527fc99.jpg",
+    "https://raw.githubusercontent.com/TungDoan93/DVSV/main/z6570022483619_58b689c8b17f1c08fd5a56ed65b9161f.jpg"
+  ]
+};
+
+// --- COMPONENT: VIDEO PLAYER (UPDATED: THUMBNAIL & CLICK TO OPEN) ---
+const VideoPlayer = ({ url }) => {
+  // Hàm lấy ID video
+  const getYouTubeID = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  const videoID = getYouTubeID(url);
+  if (!videoID) return null;
+
+  // Lấy ảnh thumbnail chất lượng cao từ Youtube
+  const thumbnailUrl = `https://img.youtube.com/vi/${videoID}/maxresdefault.jpg`;
+  // Fallback nếu không có maxres
+  const fallbackUrl = `https://img.youtube.com/vi/${videoID}/hqdefault.jpg`;
+
+  return (
+    <div className="flex justify-center w-full">
+        <a 
+          href={url} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="group relative block w-full max-w-2xl rounded-xl overflow-hidden shadow-xl border-4 border-white bg-black hover:shadow-2xl transition-all transform hover:scale-105"
+        >
+            {/* Thumbnail Image */}
+            <div className="aspect-w-16 aspect-h-9">
+                 <img 
+                    src={thumbnailUrl} 
+                    alt="Video Thumbnail" 
+                    className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                    onError={(e) => { e.target.onerror = null; e.target.src = fallbackUrl; }}
+                 />
+            </div>
+
+            {/* Overlay Play Button */}
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 group-hover:bg-opacity-10 transition-all">
+                 <div className="w-16 h-16 md:w-20 md:h-20 bg-red-600 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform border-4 border-white">
+                     <PlayCircle size={40} className="text-white ml-1" fill="white" />
+                 </div>
+            </div>
+            
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                <p className="text-white text-sm font-medium text-center opacity-90">Nhấn để xem video trên YouTube</p>
+            </div>
+        </a>
+    </div>
+  );
+};
+
+// --- COMPONENT: IMAGE BOX (SLIDESHOW) ---
+const ImageBox = ({ src, alt, height = "h-80" }) => {
+  const images = Array.isArray(src) ? src : (src ? [src] : []);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  if (images.length > 0) {
+    return (
+      <div className={`w-full ${height} rounded-xl overflow-hidden shadow-lg border-4 border-white relative group`}>
+        {images.map((imgSrc, index) => (
+          <img 
+            key={index}
+            src={imgSrc} 
+            alt={`${alt} - ${index + 1}`} 
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out
+              ${index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}
+            `} 
+          />
+        ))}
+        {images.length > 1 && (
+            <div className="absolute bottom-2 left-0 right-0 z-20 flex justify-center space-x-2">
+                {images.map((_, idx) => (
+                    <div 
+                        key={idx} 
+                        className={`h-2 w-2 rounded-full transition-all duration-300 ${idx === currentIndex ? 'bg-white w-4' : 'bg-white/50'}`}
+                    />
+                ))}
+            </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`w-full ${height} bg-gray-200 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-gray-400 text-gray-500 animate-pulse`}>
+      <ImageIcon size={48} className="mb-2 opacity-50" />
+      <span className="font-medium">[Vị trí slide ảnh: {alt}]</span>
+      <span className="text-xs mt-1">Chưa có link ảnh</span>
+    </div>
+  );
+};
+
+// --- GLOBAL STYLES ---
+const globalStyles = `
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out forwards;
+  }
+`;
+
+const content = {
+  vi: {
+    nav: {
+      overview: "Giới thiệu chung",
+      philosophy: "Triết lý đào tạo",
+      facilities: "Cơ sở vật chất",
+      programs: "Ngành đào tạo",
+      services: "Dịch vụ sinh viên",
+      contact: "Liên hệ",
+      langLabel: "Tiếng Việt"
+    },
+    hero: {
+      title: "TRƯỜNG CAO ĐẲNG VIỆT MỸ HÀ NỘI",
+      subtitle: "Thực học - Thực nghiệp - Chuẩn Quốc tế",
+      cta: "Đăng ký tư vấn ngay"
+    },
+    stats: [
+      { num: "18+", label: "Năm phát triển" },
+      { num: "200.000+", label: "Học viên EQuest" },
+      { num: "96%", label: "Có việc làm ngay" },
+      { num: "8 Tỷ", label: "Học bổng / năm" }
+    ],
+    videoTitle: "VIDEO GIỚI THIỆU",
+    overview: {
+      mainTitle: "TỔNG QUAN",
+      subTitle: "Vị thế Vững chắc - Kiến tạo Tương lai",
+      desc: "Là thành viên chiến lược của Tập đoàn Giáo dục EQuest – hệ sinh thái với hơn 200.000 học viên, Cao đẳng Việt Mỹ Hà Nội kiên định với sứ mệnh kiến tạo nguồn nhân lực chuẩn Quốc tế. Chúng tôi không chỉ đào tạo nghề, chúng tôi trao quyền để sinh viên bứt phá sự nghiệp.",
+      pillars: [
+        { title: "Nền tảng Vững mạnh", desc: "Thừa hưởng uy tín và nguồn lực từ EQuest." },
+        { title: "Sứ mệnh Thực tế", desc: "Đào tạo chú trọng đầu ra, giúp sinh viên làm chủ công việc." },
+        { title: "Đầu tư Bài bản", desc: "Cơ sở vật chất chuẩn hóa quốc tế, tối ưu trải nghiệm." }
+      ]
+    },
+    philosophy: {
+      title: "Triết lý Đào tạo",
+      items: [
+        { title: "Khai phóng tư duy", desc: "Chú trọng xây dựng tư duy phát triển và phản biện." },
+        { title: "Thực học cùng chuyên gia", desc: "Chuyên gia doanh nghiệp trực tiếp giảng dạy và dẫn dắt dự án." },
+        { title: "Đào tạo theo nhu cầu DN", desc: "Chương trình học dựa trên \"đơn đặt hàng\" từ đối tác." },
+        { title: "Cam kết chuẩn đầu ra", desc: "Đảm bảo lộ trình thực tập và cơ hội việc làm vững chắc." }
+      ]
+    },
+    detailedFacilities: {
+      title: "Cơ sở vật chất - Tiêu chuẩn quốc tế",
+      items: [
+        { title: "Hạ tầng hiện đại", desc: "Đạt tiêu chuẩn kiểm định chất lượng giáo dục nghề nghiệp." },
+        { title: "Tiện ích 5 sao", desc: "Hệ thống điều hòa, máy chiếu, TV và thiết bị nghe nhìn." },
+        { title: "Thực hành công nghệ", desc: "Phòng máy tính hiện đại phục vụ tra cứu và học tập." },
+        { title: "Xưởng thực hành", desc: "Mô phỏng sát với thực tế doanh nghiệp (Khách sạn, Spa...)." }
+      ]
+    },
+    majors: {
+      title: "Chương trình Đào tạo",
+      groups: [
+        { name: "Ngôn ngữ", items: ["Tiếng Anh", "Tiếng Nhật", "Tiếng Hàn", "Tiếng Trung"] },
+        { name: "Quản trị & Kinh doanh", items: ["Quản trị kinh doanh", "Quản trị Khách sạn"] },
+        { name: "Công nghệ & Thiết kế", items: ["Thiết kế đồ họa", "Ứng dụng phần mềm", "Digital Marketing", "Công nghệ ô tô"] },
+        { name: "Sức khỏe & Dịch vụ", items: ["Chăm sóc sắc đẹp", "Logistics"] }
+      ]
+    },
+    life: {
+      title: "Dịch vụ sinh viên Quốc tế",
+      list: [
+        "Khu thực hành chuẩn doanh nghiệp & Căn tin tiện lợi",
+        "Ký túc xá & Hỗ trợ SV quốc tế (SIM, Ngân hàng)",
+        "CLB: Bóng đá, Kpop, Graphic Design, Tiếng Anh...",
+        "Hoạt động ngoại khóa sôi nổi: Ring Golden Bell, The Next Agency"
+      ]
+    },
+    locations: {
+      title: "Cơ sở đào tạo",
+      list: ["Cơ sở Cầu Giấy", "Cơ sở Đinh Lê"]
+    },
+    footer: { copy: "© 2025 Trường Cao đẳng Việt Mỹ Hà Nội. Thành viên Tập đoàn EQuest." }
+  },
+  en: {
+    nav: {
+      overview: "Introduction",
+      philosophy: "Philosophy",
+      facilities: "Facilities",
+      programs: "Programs",
+      services: "Student Services",
+      contact: "Contact",
+      langLabel: "English"
+    },
+    hero: {
+      title: "VIET MY COLLEGE",
+      subtitle: "Practical Learning - International Standard",
+      cta: "Admissions Inquiry"
+    },
+    stats: [
+      { num: "18+", label: "Years of Growth" },
+      { num: "200,000+", label: "EQuest Students" },
+      { num: "96%", label: "Employed Instantly" },
+      { num: "8 Bil", label: "Scholarships/Year" }
+    ],
+    videoTitle: "INTRODUCTION VIDEO",
+    overview: {
+      mainTitle: "OVERVIEW",
+      subTitle: "Solid Position - Shaping the Future",
+      desc: "As a strategic member of EQuest Education Group (an ecosystem of over 200,000 students), Viet My College is steadfast in its mission to cultivate international-standard human resources. We empower students to breakthrough in their careers.",
+      pillars: [
+        { title: "Strong Foundation", desc: "Inheriting prestige and resources from EQuest." },
+        { title: "Practical Mission", desc: "Output-focused training, helping students master their jobs." },
+        { title: "Strategic Investment", desc: "Internationally standardized facilities optimized for skills." }
+      ]
+    },
+    philosophy: {
+      title: "Training Philosophy",
+      items: [
+        { title: "Liberating Minds", desc: "Fostering growth mindset and critical thinking." },
+        { title: "Learning with Experts", desc: "Industry experts directly teach and guide projects." },
+        { title: "Training for Business", desc: "Curriculum designed based on actual personnel 'orders'." },
+        { title: "Output Commitment", desc: "Ensuring a clear internship roadmap and job opportunities." }
+      ]
+    },
+    detailedFacilities: {
+      title: "Facilities - International Standard",
+      items: [
+        { title: "Modern Infrastructure", desc: "Meeting vocational education accreditation standards." },
+        { title: "5-Star Amenities", desc: "Classrooms with AC, projectors, TVs, and high-quality AV." },
+        { title: "High-Tech Practice", desc: "Modern computer labs for research and learning." },
+        { title: "Vocational Workshops", desc: "Simulation rooms mimicking real business environments." }
+      ]
+    },
+    majors: {
+      title: "Academic Programs",
+      groups: [
+        { name: "Languages", items: ["English", "Japanese", "Korean", "Chinese"] },
+        { name: "Business & Admin", items: ["Business Admin", "Hotel Management"] },
+        { name: "Tech & Design", items: ["Graphic Design", "Software Apps", "Digital Marketing", "Automotive Tech"] },
+        { name: "Health & Services", items: ["Beauty Care", "Logistics"] }
+      ]
+    },
+    life: {
+      title: "International Student Services",
+      list: [
+        "Enterprise-standard practice zones & Canteen",
+        "Dormitory & Int'l Student Support (SIM, Banking)",
+        "Clubs: Football, Kpop, Graphic Design, English...",
+        "Events: Ring Golden Bell, The Next Agency"
+      ]
+    },
+    locations: {
+      title: "Our Campuses",
+      list: ["Cau Giay Campus", "Dinh Le Campus"]
+    },
+    footer: { copy: "© 2025 Viet My College. Member of EQuest Group." }
+  },
+  mm: {
+    nav: {
+      overview: "မိတ်ဆက်",
+      philosophy: "ဒဿန",
+      facilities: "အဆောက်အအုံ",
+      programs: "သင်တန်းများ",
+      services: "ဝန်ဆောင်မှုများ",
+      contact: "ဆက်သွယ်ရန်",
+      langLabel: "မြန်မာ"
+    },
+    hero: {
+      title: "VIET MY COLLEGE",
+      subtitle: "လက်တွေ့ကျသောပညာရေး - နိုင်ငံတကာအဆင့်မီ",
+      cta: "ယခုပင် စုံစမ်းမေးမြန်းပါ"
+    },
+    stats: [
+      { num: "18+", label: "နှစ်ပေါင်းများစွာ တိုးတက်မှု" },
+      { num: "200,000+", label: "EQuest ကျောင်းသားများ" },
+      { num: "96%", label: "ချက်ချင်းအလုပ်ရရှိမှု" },
+      { num: "8 Bil", label: "ပညာသင်ဆုများ/နှစ်" }
+    ],
+    videoTitle: "မိတ်ဆက် ဗီဒီယို",
+    overview: {
+      mainTitle: "အနှစ်ချုပ်",
+      subTitle: "ခိုင်မာသော ရပ်တည်ချက် - အနာဂတ်ကို တည်ဆောက်ခြင်း",
+      desc: "EQuest Education Group ၏ မဟာဗျူဟာမြောက် အဖွဲ့ဝင်အနေဖြင့် Viet My College သည် နိုင်ငံတကာအဆင့်မီ လူသားအရင်းအမြစ်များကို ပြုစုပျိုးထောင်ရန် ကတိပြုပါသည်။",
+      pillars: [
+        { title: "ခိုင်မာသော အခြေခံအုတ်မြစ်", desc: "EQuest ထံမှ ဂုဏ်သတင်းနှင့် အရင်းအမြစ်များကို ရယူထားခြင်း။" },
+        { title: "လက်တွေ့ကျသော လုပ်ဆောင်ချက်", desc: "ကျောင်းသားများအား လုပ်ငန်းခွင်ကျွမ်းကျင်စေရန် ကူညီပေးခြင်း။" },
+        { title: "မဟာဗျူဟာမြောက် ရင်းနှီးမြှုပ်နှံမှု", desc: "ကျွမ်းကျင်မှု လေ့ကျင့်ရေးအတွက် နိုင်ငံတကာ စံမီ အဆောက်အအုံများ။" }
+      ]
+    },
+    philosophy: {
+      title: "သင်ကြားရေး ဒဿန",
+      items: [
+        { title: "အတွေးအခေါ် ဖွင့်ထုတ်ခြင်း", desc: "ဝေဖန်ပိုင်းခြားနိုင်စွမ်းကို တည်ဆောက်ပေးခြင်း။" },
+        { title: "ကျွမ်းကျင်ပညာရှင်များနှင့် သင်ယူခြင်း", desc: "လုပ်ငန်းခွင်မှ ကျွမ်းကျင်ပညာရှင်များက တိုက်ရိုက်သင်ကြားပေးခြင်း။" },
+        { title: "လုပ်ငန်းခွင်လိုအပ်ချက်နှင့်အညီ သင်ကြားခြင်း", desc: "မိတ်ဖက်လုပ်ငန်းများ၏ လိုအပ်ချက်ပေါ် အခြေခံ၍ သင်ရိုးရေးဆွဲခြင်း။" },
+        { title: "ရလဒ် အာမခံချက်", desc: "အလုပ်အကိုင် အခွင့်အလမ်းများကို အာမခံခြင်း။" }
+      ]
+    },
+    detailedFacilities: {
+      title: "နိုင်ငံတကာအဆင့်မီ အဆောက်အအုံများ",
+      items: [
+        { title: "ခေတ်မီ အခြေခံအဆောက်အအုံ", desc: "အရည်အသွေးစစ်ဆေးမှု စံချိန်စံညွှန်းများနှင့် ကိုက်ညီသော အဆောက်အအုံများ။" },
+        { title: "ကြယ် ၅ ပွင့်အဆင့် အသုံးအဆောင်များ", desc: "လေအေးပေးစက်၊ ပရိုဂျက်တာ၊ TV နှင့် ကိရိယာများ။" },
+        { title: "နည်းပညာမြင့် လက်တွေ့ခန်းများ", desc: "သုတေသနအတွက် ခေတ်မီ ကွန်ပျူတာခန်းများ။" },
+        { title: "သက်မွေးဝမ်းကျောင်း အလုပ်ရုံများ", desc: "ဟိုတယ်၊ အလှအပရေးရာ လုပ်ငန်းခွင်ပုံစံတူ လက်တွေ့ခန်းများ။" }
+      ]
+    },
+    majors: {
+      title: "ပညာရေး အစီအစဉ်များ",
+      groups: [
+        { name: "ဘာသာစကားများ", items: ["အင်္ဂလိပ်စာ", "ဂျပန်စာ", "ကိုရီးယားစာ", "တရုတ်စာ"] },
+        { name: "စီမံခန့်ခွဲမှု", items: ["Business Admin", "Hotel Management"] },
+        { name: "နည်းပညာနှင့် ဒီဇိုင်း", items: ["Graphic Design", "Software Apps", "Digital Marketing", "Automotive Tech"] },
+        { name: "ကျန်းမာရေးနှင့် ဝန်ဆောင်မှု", items: ["Beauty Care", "Logistics"] }
+      ]
+    },
+    life: {
+      title: "နိုင်ငံတကာကျောင်းသား ဝန်ဆောင်မှုများ",
+      list: [
+        "လုပ်ငန်းခွင်အဆင့်မီ လက်တွေ့ခန်းများနှင့် ကန်တင်း",
+        "အဆောင်နှင့် နိုင်ငံတကာကျောင်းသား ပံ့ပိုးမှု (SIM, Banking)",
+        "ကလပ်များ- ဘောလုံး၊ Kpop၊ ဂရပ်ဖစ်ဒီဇိုင်း၊ အင်္ဂလိပ်...",
+        "Ring Golden Bell နှင့် The Next Agency ကဲ့သို့သော ပွဲများ"
+      ]
+    },
+    locations: {
+      title: "ကျောင်းခွဲများ",
+      list: ["Cau Giay Campus", "Dinh Le Campus"]
+    },
+    footer: { copy: "© 2025 Viet My College. Member of EQuest Group." }
+  }
+};
+
+// --- COMPONENTS ---
+
+const SectionTitle = ({ children, color }) => (
+  <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 uppercase relative pb-4">
+    <span style={{ color: color }}>{children}</span>
+    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-20 h-1" style={{ backgroundColor: BRAND_COLORS.accent }}></div>
+  </h2>
+);
+
+const Card = ({ title, items, icon: Icon }) => (
+  <div className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow border-t-4 h-full" style={{ borderColor: BRAND_COLORS.accent }}>
+    <div className="flex items-center mb-4">
+      <div className="p-3 rounded-full mr-3 text-white" style={{ backgroundColor: BRAND_COLORS.primary }}>
+        <Icon size={24} />
+      </div>
+      <h3 className="text-xl font-bold" style={{ color: BRAND_COLORS.primary }}>{title}</h3>
+    </div>
+    <ul className="space-y-2">
+      {items.map((item, idx) => (
+        <li key={idx} className="flex items-center text-gray-600">
+          <ChevronRight size={16} className="mr-2 flex-shrink-0" style={{ color: BRAND_COLORS.accent }} />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
+// Icon Maps
+const PhilosophyIcons = [Brain, UserCheck, Briefcase, ShieldCheck];
+const FacilityIcons = [Building2, Tv, Cpu, Scissors];
+const OverviewIcons = [Landmark, Target, TrendingUp];
+
+export default function App() {
+  const [lang, setLang] = useState('vi');
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const t = content[lang];
+  
+  const langMenuRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (langMenuRef.current && !langMenuRef.current.contains(event.target)) {
+        setIsLangOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [langMenuRef]);
+
+  const handleLangSelect = (selectedLang) => {
+    setLang(selectedLang);
+    setIsLangOpen(false);
+    setIsMenuOpen(false);
+  };
+
+  return (
+    <div className="min-h-screen font-sans text-gray-800 bg-gray-50">
+      <style>{globalStyles}</style>
+      
+      {/* HEADER */}
+      <header className="sticky top-0 z-50 shadow-md text-white" style={{ backgroundColor: BRAND_COLORS.primary }}>
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+             {/* Logo */}
+             <img 
+                src={SYSTEM_IMAGES.logo}
+                alt="Logo Viet My College" 
+                className="h-12 w-auto object-contain bg-white rounded-sm p-1"
+             />
+             <h1 className="text-lg md:text-xl font-bold uppercase tracking-wider ml-2 hidden sm:block">Viet My College</h1>
+          </div>
+
+          {/* Desktop Nav */}
+          <nav className="hidden xl:flex items-center space-x-6 text-sm font-medium">
+            <a href="#overview" className="hover:text-yellow-300 transition">{t.nav.overview}</a>
+            <a href="#philosophy" className="hover:text-yellow-300 transition">{t.nav.philosophy}</a>
+            <a href="#facilities" className="hover:text-yellow-300 transition">{t.nav.facilities}</a>
+            <a href="#programs" className="hover:text-yellow-300 transition">{t.nav.programs}</a>
+            <a href="#services" className="hover:text-yellow-300 transition">{t.nav.services}</a>
+            
+            {/* Language Dropdown */}
+            <div className="relative ml-4" ref={langMenuRef}>
+                <button 
+                  onClick={() => setIsLangOpen(!isLangOpen)}
+                  className="flex items-center px-3 py-1 rounded font-bold border hover:bg-white hover:text-blue-900 transition"
+                  style={{ borderColor: BRAND_COLORS.accent }}
+                >
+                  <Globe size={16} className="mr-2" />
+                  {t.nav.langLabel}
+                  <ChevronDown size={14} className="ml-1" />
+                </button>
+                
+                {isLangOpen && (
+                    <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-xl py-1 text-gray-800 animate-fade-in border border-gray-100">
+                        <button onClick={() => handleLangSelect('vi')} className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${lang === 'vi' ? 'font-bold text-blue-900' : ''}`}>
+                            Tiếng Việt
+                        </button>
+                        <button onClick={() => handleLangSelect('en')} className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${lang === 'en' ? 'font-bold text-blue-900' : ''}`}>
+                            English
+                        </button>
+                        <button onClick={() => handleLangSelect('mm')} className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${lang === 'mm' ? 'font-bold text-blue-900' : ''}`}>
+                            မြန်မာ (Myanmar)
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            <a 
+                href="#contact"
+                className="px-5 py-2 rounded-full font-bold shadow-lg hover:brightness-110 transition transform hover:-translate-y-0.5"
+                style={{ backgroundColor: BRAND_COLORS.accent }}
+            >
+              {t.nav.contact}
+            </a>
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <button className="xl:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+        </div>
+
+        {/* Mobile Nav Dropdown */}
+        {isMenuOpen && (
+          <div className="xl:hidden bg-blue-900 border-t border-blue-800 p-4 flex flex-col space-y-4">
+            <a href="#overview" onClick={() => setIsMenuOpen(false)}>{t.nav.overview}</a>
+            <a href="#philosophy" onClick={() => setIsMenuOpen(false)}>{t.nav.philosophy}</a>
+            <a href="#facilities" onClick={() => setIsMenuOpen(false)}>{t.nav.facilities}</a>
+            <a href="#programs" onClick={() => setIsMenuOpen(false)}>{t.nav.programs}</a>
+            <a href="#services" onClick={() => setIsMenuOpen(false)}>{t.nav.services}</a>
+            
+            <div className="border-t border-blue-800 pt-4">
+                <p className="text-xs uppercase text-gray-400 mb-2">Select Language</p>
+                <div className="flex space-x-2">
+                    <button onClick={() => handleLangSelect('vi')} className={`px-3 py-1 rounded ${lang === 'vi' ? 'bg-red-600 text-white' : 'bg-blue-800 text-gray-300'}`}>VN</button>
+                    <button onClick={() => handleLangSelect('en')} className={`px-3 py-1 rounded ${lang === 'en' ? 'bg-red-600 text-white' : 'bg-blue-800 text-gray-300'}`}>EN</button>
+                    <button onClick={() => handleLangSelect('mm')} className={`px-3 py-1 rounded ${lang === 'mm' ? 'bg-red-600 text-white' : 'bg-blue-800 text-gray-300'}`}>MM</button>
+                </div>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* HERO SECTION */}
+      <section className="relative py-20 md:py-32 flex items-center justify-center text-center px-4 overflow-hidden">
+        <div className="absolute inset-0 z-0 opacity-10 bg-repeat" style={{ 
+            backgroundImage: `radial-gradient(${BRAND_COLORS.primary} 1px, transparent 1px)`, 
+            backgroundSize: '20px 20px' 
+        }}></div>
+        <div className="absolute inset-0 z-0 opacity-5">
+            <div className="absolute top-0 left-0 w-64 h-64 rounded-full bg-blue-500 filter blur-3xl"></div>
+            <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-red-500 filter blur-3xl"></div>
+        </div>
+
+        <div className="relative z-10 max-w-4xl mx-auto">
+            <span className="inline-block py-1 px-3 rounded-full text-sm font-bold mb-4 bg-blue-100" style={{ color: BRAND_COLORS.primary }}>
+                EQuest Education Group
+            </span>
+            <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight" style={{ color: BRAND_COLORS.primary }}>
+                {t.hero.title}
+            </h1>
+            <p className="text-xl md:text-2xl mb-10 text-gray-600 font-light">
+                {t.hero.subtitle}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button className="px-8 py-4 rounded-full text-white font-bold text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-1" style={{ backgroundColor: BRAND_COLORS.accent }}>
+                    {t.hero.cta}
+                </button>
+            </div>
+        </div>
+      </section>
+
+      {/* STATS SECTION */}
+      <section className="py-12 text-white" style={{ backgroundColor: BRAND_COLORS.primary }}>
+        <div className="container mx-auto px-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-blue-800/50">
+                {t.stats.map((stat, index) => (
+                    <div key={index} className="p-2">
+                        <div className="text-3xl md:text-5xl font-bold mb-2 text-yellow-400">{stat.num}</div>
+                        <div className="text-sm md:text-base opacity-90">{stat.label}</div>
+                    </div>
+                ))}
+            </div>
+        </div>
+      </section>
+
+      {/* VIDEO SECTION */}
+      <section className="py-16 bg-blue-50">
+        <div className="container mx-auto px-4">
+           <SectionTitle color={BRAND_COLORS.primary}>{t.videoTitle}</SectionTitle>
+           <VideoPlayer url={YOUTUBE_URL} />
+        </div>
+      </section>
+
+      {/* OVERVIEW SECTION - WITH IMAGE BOX */}
+      <section id="overview" className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4 max-w-6xl">
+           
+           <div className="grid md:grid-cols-2 gap-12 items-center mb-12">
+              <div className="text-left">
+                 {/* Updated Title Style */}
+                 <h3 className="text-3xl md:text-4xl font-extrabold tracking-widest uppercase mb-4" style={{ color: BRAND_COLORS.accent }}>
+                    {t.overview.mainTitle}
+                 </h3>
+                 <h2 className="text-2xl md:text-3xl font-bold mb-6 leading-tight" style={{ color: BRAND_COLORS.primary }}>
+                    {t.overview.subTitle}
+                 </h2>
+                 <p className="text-lg text-gray-600 leading-relaxed">
+                    {t.overview.desc}
+                 </p>
+              </div>
+              {/* Image Box for Overview */}
+              <div>
+                 <ImageBox src={SYSTEM_IMAGES.overview} alt="Tổng quan" />
+              </div>
+           </div>
+
+           <div className="grid md:grid-cols-3 gap-8 text-left">
+              {t.overview.pillars.map((pillar, idx) => {
+                  const Icon = OverviewIcons[idx];
+                  return (
+                    <div key={idx} className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all border-b-4" style={{ borderColor: BRAND_COLORS.accent }}>
+                        <div className="mb-4 p-3 bg-blue-50 w-fit rounded-lg text-blue-900">
+                            <Icon size={28} />
+                        </div>
+                        <h4 className="text-xl font-bold mb-3" style={{ color: BRAND_COLORS.primary }}>{pillar.title}</h4>
+                        <p className="text-gray-600 text-sm">{pillar.desc}</p>
+                    </div>
+                  );
+              })}
+           </div>
+        </div>
+      </section>
+
+      {/* PHILOSOPHY SECTION - WITH IMAGE BOX */}
+      <section id="philosophy" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+            <SectionTitle color={BRAND_COLORS.primary}>{t.philosophy.title}</SectionTitle>
+            
+            <div className="grid md:grid-cols-2 gap-12 max-w-6xl mx-auto items-center">
+                {/* Image Box Left Side for variation */}
+                <div className="order-2 md:order-1">
+                    <ImageBox src={SYSTEM_IMAGES.philosophy} alt="Triết lý đào tạo" height="h-full min-h-[400px]" />
+                </div>
+
+                <div className="grid gap-6 order-1 md:order-2">
+                    {t.philosophy.items.map((item, index) => {
+                        const IconComponent = PhilosophyIcons[index];
+                        return (
+                            <div key={index} className="bg-gray-50 p-6 rounded-2xl border-l-8 shadow-sm hover:shadow-md transition duration-300 flex items-start" style={{ borderColor: index % 2 === 0 ? BRAND_COLORS.primary : BRAND_COLORS.accent }}>
+                                <div className={`p-3 rounded-full mr-4 bg-white shadow-sm flex-shrink-0`}>
+                                    <IconComponent size={24} style={{ color: index % 2 === 0 ? BRAND_COLORS.primary : BRAND_COLORS.accent }} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold mb-2" style={{ color: BRAND_COLORS.primary }}>{item.title}</h3>
+                                    <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        </div>
+      </section>
+
+      {/* DETAILED FACILITIES SECTION - WITH IMAGE BOX */}
+      <section id="facilities" className="py-20 bg-blue-50">
+        <div className="container mx-auto px-4">
+            <SectionTitle color={BRAND_COLORS.primary}>{t.detailedFacilities.title}</SectionTitle>
+            
+            {/* Top Image Banner */}
+            <div className="max-w-6xl mx-auto mb-12">
+               <ImageBox src={SYSTEM_IMAGES.facilities} alt="Cơ sở vật chất" height="h-64 md:h-96" />
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                {t.detailedFacilities.items.map((item, index) => {
+                    const IconComponent = FacilityIcons[index];
+                    return (
+                        <div key={index} className="bg-white p-6 rounded-xl shadow-lg hover:-translate-y-2 transition duration-300 flex flex-col items-center text-center h-full">
+                            <div className="mb-6 p-4 rounded-full bg-gray-50 text-blue-900">
+                                <IconComponent size={40} strokeWidth={1.5} />
+                            </div>
+                            <h3 className="text-lg font-bold mb-3 uppercase" style={{ color: BRAND_COLORS.accent }}>{item.title}</h3>
+                            <p className="text-sm text-gray-600 leading-relaxed">{item.desc}</p>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+      </section>
+
+      {/* MAJORS SECTION - WITH IMAGE BOX */}
+      <section id="programs" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+            <SectionTitle color={BRAND_COLORS.primary}>{t.majors.title}</SectionTitle>
+
+             {/* Top Image Banner */}
+             <div className="max-w-6xl mx-auto mb-12">
+               {/* Đã cập nhật ImageBox này để dùng slide ảnh programs */}
+               <ImageBox src={SYSTEM_IMAGES.programs} alt="Ngành đào tạo" height="h-64" />
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                <Card title={t.majors.groups[0].name} items={t.majors.groups[0].items} icon={Globe} />
+                <Card title={t.majors.groups[1].name} items={t.majors.groups[1].items} icon={Briefcase} />
+                <Card title={t.majors.groups[2].name} items={t.majors.groups[2].items} icon={Monitor} />
+                <Card title={t.majors.groups[3].name} items={t.majors.groups[3].items} icon={Heart} />
+            </div>
+        </div>
+      </section>
+
+      {/* SERVICES / LIFE - WITH IMAGE BOX */}
+      <section id="services" className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
+                
+                {/* Image Box */}
+                <div>
+                    <ImageBox src={SYSTEM_IMAGES.services} alt="Dịch vụ sinh viên" height="h-96" />
+                </div>
+
+                <div>
+                    <h3 className="text-3xl font-bold mb-6" style={{ color: BRAND_COLORS.primary }}>
+                        {t.life.title}
+                    </h3>
+                    <div className="space-y-6">
+                        {t.life.list.map((item, idx) => (
+                            <div key={idx} className="flex items-start">
+                                <div className="mt-1 mr-4 min-w-[24px]">
+                                    <Star size={24} fill={BRAND_COLORS.accent} color={BRAND_COLORS.accent} />
+                                </div>
+                                <p className="text-lg text-gray-700">{item}</p>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <div className="mt-10 pt-8 border-t border-gray-200">
+                        <h4 className="font-bold mb-4 text-gray-500 uppercase text-sm tracking-widest">{t.locations.title}</h4>
+                        <div className="flex flex-wrap gap-4">
+                            {t.locations.list.map((loc, idx) => (
+                                <span key={idx} className="px-4 py-2 bg-blue-50 text-blue-900 rounded-lg font-medium text-sm">
+                                    📍 {loc}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+      </section>
+
+      {/* CTA / FOOTER */}
+      <footer id="contact" className="text-white pt-16 pb-8" style={{ backgroundColor: BRAND_COLORS.primary }}>
+        <div className="container mx-auto px-4 text-center">
+            <div className="max-w-2xl mx-auto mb-12">
+                <h2 className="text-3xl font-bold mb-6">Ready to join us?</h2>
+                <p className="mb-8 opacity-80">Đăng ký ngay hôm nay để trở thành công dân toàn cầu cùng Cao đẳng Việt Mỹ.</p>
+                <button className="px-10 py-4 rounded-full font-bold text-xl shadow-lg transition transform hover:scale-105" style={{ backgroundColor: BRAND_COLORS.accent }}>
+                    Đăng Ký Ngay
+                </button>
+            </div>
+
+            <div className="border-t border-blue-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm opacity-60">
+                <p>{t.footer.copy}</p>
+                <div className="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" className="hover:text-white transition">Facebook</a>
+                    <a href="#" className="hover:text-white transition">Youtube</a>
+                    <a href="#" className="hover:text-white transition">Tiktok</a>
+                </div>
+            </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
