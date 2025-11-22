@@ -111,11 +111,11 @@ const VideoPlayer = ({ url }) => {
           className="group relative block w-full max-w-2xl rounded-xl overflow-hidden shadow-xl border-4 border-white bg-black hover:shadow-2xl transition-all transform hover:scale-105"
         >
             {/* Thumbnail Image */}
-            <div className="aspect-w-16 aspect-h-9">
+            <div className="aspect-video w-full bg-gray-900">
                  <img 
                     src={thumbnailUrl} 
                     alt="Video Thumbnail" 
-                    className="w-full h-auto object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                    className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
                     onError={(e) => { e.target.onerror = null; e.target.src = fallbackUrl; }}
                  />
             </div>
@@ -136,7 +136,8 @@ const VideoPlayer = ({ url }) => {
 };
 
 // --- COMPONENT: IMAGE BOX (SLIDESHOW) ---
-const ImageBox = ({ src, alt, height = "h-80" }) => {
+// Cập nhật: Thêm prop objectFit để tùy chỉnh cách hiển thị ảnh (cover/contain)
+const ImageBox = ({ src, alt, height = "h-80", objectFit = "object-cover" }) => {
   const images = Array.isArray(src) ? src : (src ? [src] : []);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -150,13 +151,13 @@ const ImageBox = ({ src, alt, height = "h-80" }) => {
 
   if (images.length > 0) {
     return (
-      <div className={`w-full ${height} rounded-xl overflow-hidden shadow-lg border-4 border-white relative group`}>
+      <div className={`w-full ${height} rounded-xl overflow-hidden shadow-lg border-4 border-white relative group bg-gray-100`}>
         {images.map((imgSrc, index) => (
           <img 
             key={index}
             src={imgSrc} 
             alt={`${alt} - ${index + 1}`} 
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out
+            className={`absolute inset-0 w-full h-full ${objectFit} transition-opacity duration-1000 ease-in-out
               ${index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'}
             `} 
           />
@@ -724,10 +725,14 @@ export default function App() {
         <div className="container mx-auto px-4">
             <SectionTitle color={BRAND_COLORS.primary}>{t.majors.title}</SectionTitle>
 
-             {/* Top Image Banner */}
+             {/* Top Image Banner - CẬP NHẬT: Tăng chiều cao và dùng object-contain để không cắt ảnh */}
              <div className="max-w-6xl mx-auto mb-12">
-               {/* Đã cập nhật ImageBox này để dùng slide ảnh programs */}
-               <ImageBox src={SYSTEM_IMAGES.programs} alt="Ngành đào tạo" height="h-64" />
+               <ImageBox 
+                  src={SYSTEM_IMAGES.programs} 
+                  alt="Ngành đào tạo" 
+                  height="h-[400px] md:h-[650px]" 
+                  objectFit="object-contain" 
+               />
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
